@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title', '3DPrintShop')</title>
+
+    @vite(['resources/css/app.css', 'resources/css/nav.css', 'resources/js/app.js', 'resources/js/nav.js'])
+</head>
+<body>
+@include('partials.nav')
+
+<main class="site-main">
+  <div class="container main-content">
+    @yield('content')
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; {{ date('Y') }} 3DPrintShop. All rights reserved.</p>
+  </div>
+</footer>
+@stack('scripts')
+</body>
+</html>
