@@ -6,54 +6,62 @@
 @section('title', 'Login / Register')
 
 @section('content')
-    <style>
-        .auth-input {
-            padding: 0.2rem;
-            border: 2px solid #ccc;
-            border-radius: 6px;
-        }
-    </style>
-    <h1 id="auth-title">Login</h1>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 id="auth-title" class="auth-title">Login</h1>
 
-    <div style="margin-bottom:1rem;">
-        <span>Nemáš účet?</span>
-        <a href="#" id="show-register">Registrovať</a>
-        <span style="margin:0 0.5rem;">|</span>
-        <a href="#" id="show-login" style="display:none;">Prihlásiť</a>
-    </div>
+            <div id="login-form" style="display:block;">
+                <form method="POST" action="{{ route('login.submit') }}">
+                    @csrf
+                    <div class="auth-form-group">
+                        <label for="login-email" class="auth-label">Email</label>
+                        <input class="auth-input" id="login-email" type="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="auth-form-group">
+                        <label for="login-password" class="auth-label">Password</label>
+                        <div class="password-field">
+                            <input class="auth-input" id="login-password" type="password" name="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit">Login</button>
+                </form>
 
-    <div id="login-form" style="display:block;">
-        <form method="POST" action="{{ route('login.submit') }}">
-            @csrf
-            <div style="margin-bottom:1rem;">
-                <label for="login-email">Email</label><br>
-                <input class = "auth-input" id="login-email" type="email" name="email" required>
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label for="login-password">Heslo</label><br>
-                <input class = "auth-input" id="login-password" type="password" name="password" required>
-            </div>
-            <button type="submit">Prihlásiť</button>
-        </form>
-    </div>
+                <div class="auth-divider">or</div>
 
-    <div id="register-form" style="display:none;">
-        <form method="POST" action="{{ route('register.submit') }}">
-            @csrf
-            <div style="margin-bottom:1rem;">
-                <label for="register-name">Meno</label><br>
-                <input class = "auth-input" id="register-name" type="text" name="name" required>
+                <div class="auth-toggle">
+                    <span>Don't have an account?</span>
+                    <a href="#" id="show-register-bottom">Register</a>
+                </div>
             </div>
-            <div style="margin-bottom:1rem;">
-                <label for="register-email">Email</label><br>
-                <input class = "auth-input" id="register-email" type="email" name="email" required>
+
+            <div id="register-form" style="display:none;">
+                <form method="POST" action="{{ route('register.submit') }}">
+                    @csrf
+                    <div class="auth-form-group">
+                        <label for="register-name" class="auth-label">Name</label>
+                        <input class="auth-input" id="register-name" type="text" name="name" placeholder="Your name" required>
+                    </div>
+                    <div class="auth-form-group">
+                        <label for="register-email" class="auth-label">Email</label>
+                        <input class="auth-input" id="register-email" type="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="auth-form-group">
+                        <label for="register-password" class="auth-label">Password</label>
+                        <div class="password-field">
+                            <input class="auth-input" id="register-password" type="password" name="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit">Register</button>
+                </form>
+
+                <div class="auth-divider">or</div>
+
+                <div class="auth-toggle">
+                    <span>Already have an account?</span>
+                    <a href="#" id="show-login-bottom">Login</a>
+                </div>
             </div>
-            <div style="margin-bottom:1rem;">
-                <label for="register-password">Heslo</label><br>
-                <input class = "auth-input" id="register-password" type="password" name="password" required>
-            </div>
-            <button type="submit">Registrovať</button>
-        </form>
+        </div>
     </div>
 
     <script>
@@ -61,26 +69,25 @@
             const title = document.getElementById('auth-title');
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
-            const showLogin = document.getElementById('show-login');
-            const showRegister = document.getElementById('show-register');
+            const showRegisterBottom = document.getElementById('show-register-bottom');
+            const showLoginBottom = document.getElementById('show-login-bottom');
 
-            showRegister.addEventListener('click', function (e) {
+            function switchToRegister(e) {
                 e.preventDefault();
-                title.textContent = 'Registrovať';
+                title.textContent = 'Register';
                 loginForm.style.display = 'none';
                 registerForm.style.display = 'block';
-                showRegister.style.display = 'none';
-                showLogin.style.display = 'inline';
-            });
+            }
 
-            showLogin.addEventListener('click', function (e) {
+            function switchToLogin(e) {
                 e.preventDefault();
                 title.textContent = 'Login';
                 registerForm.style.display = 'none';
                 loginForm.style.display = 'block';
-                showLogin.style.display = 'none';
-                showRegister.style.display = 'inline';
-            });
+            }
+
+            showRegisterBottom.addEventListener('click', switchToRegister);
+            showLoginBottom.addEventListener('click', switchToLogin);
         });
     </script>
 @endsection

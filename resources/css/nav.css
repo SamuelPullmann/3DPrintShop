@@ -1,0 +1,155 @@
+@import 'tailwindcss';
+
+.nav-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    flex-wrap: nowrap;
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 0 0 auto;
+}
+
+.nav-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-brand-logo {
+    height: 4.5rem;
+    width: auto;
+    display: block;
+}
+
+.nav-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Search: centered between logo and actions */
+.nav-search {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 0;
+    margin: 0 1rem;
+    position: relative;
+}
+
+.nav-search-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+
+.nav-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.nav-search-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem 0.6rem 2.6rem;
+    border: 1px solid #e6e6e6;
+    border-radius: 0.5rem;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+/* Actions: right-aligned, fixed size buttons/links */
+.nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 0;
+    flex: 0 0 auto;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.nav-img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Search icon in actions - hidden by default, shown only on mobile */
+.nav-actions .nav-link-search {
+    display: none;
+}
+
+/* Footer */
+.site-footer {
+    background: #fff;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding: 1rem 0;
+}
+
+.site-footer .container {
+    padding: 0;
+}
+
+/* Accessibility helper */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Mobile: hide search bar, show search icon in actions */
+@media (max-width: 768px) {
+    .nav-container {
+        gap: 0.5rem;
+    }
+
+    /* hide the search form completely */
+    .nav-search {
+        display: none;
+    }
+
+    /* show search icon in actions area */
+    .nav-actions .nav-link-search {
+        display: inline-flex;
+    }
+}

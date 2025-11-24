@@ -7,17 +7,21 @@
 
     <title>@yield('title', '3DPrintShop')</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/nav.css', 'resources/js/app.js', 'resources/js/nav.js'])
 </head>
 <body>
 @include('partials.nav')
 
-<main class="container" style="padding:2rem 0;">
+<main class="site-main">
+  <div class="container main-content">
     @yield('content')
+  </div>
 </main>
 
-<footer class="container" style="padding:1rem 0;border-top:1px solid #eaeaea;">
+<footer class="site-footer">
+  <div class="container">
     <p>&copy; {{ date('Y') }} 3DPrintShop. All rights reserved.</p>
+  </div>
 </footer>
 </body>
 </html>

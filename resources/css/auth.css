@@ -1,0 +1,132 @@
+/* Auth page styles */
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 2rem 2rem;
+    max-width: 420px;
+    width: 100%;
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+}
+
+.auth-toggle {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auth-toggle a {
+    color: #00bcd4;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
+.auth-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.auth-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border: 2px solid #e6e6e6;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    background: #f8f9fa;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #00bcd4;
+    background: #fff;
+}
+
+.auth-input::placeholder {
+    color: #999;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+}
+
+.auth-submit {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #00bcd4 0%, #9c27b0 100%);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 0.25rem;
+}
+
+.auth-submit:hover {
+    opacity: 0.9;
+}
+
+.auth-divider {
+    text-align: center;
+    margin: 1.25rem 0;
+    color: #999;
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #e6e6e6;
+}
+
+.auth-divider::before {
+    left: 0;
+}
+
+.auth-divider::after {
+    right: 0;
+}

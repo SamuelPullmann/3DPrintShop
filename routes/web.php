@@ -6,11 +6,19 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/search', function () {
+    return view('home');
+})->name('search');
+
 Route::get('/auth', function () {
     return view('auth');
 })->name('auth.show');
 
-// (voliteľne si neskôr doplníš POST routy na login/register)
+// Cart page (simple placeholder)
+Route::get('/cart', function () {
+    return view('cart');
+})->name('cart.show');
+
 Route::post('/login', function () {
     // handle login
 })->name('login.submit');
