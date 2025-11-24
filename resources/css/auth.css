@@ -15,6 +15,7 @@
     padding: 2rem 2rem;
     max-width: 420px;
     width: 100%;
+    min-height: 500px;
 }
 
 .auth-title {
@@ -129,4 +130,41 @@
 
 .auth-divider::after {
     right: 0;
+}
+
+.auth-user-info {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.auth-user-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.auth-user-email {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-user-role {
+    color: #00bcd4;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* Error text styling */
+.auth-error-text {
+    display: block;
+    color: #f44336;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+    font-weight: 500;
 }

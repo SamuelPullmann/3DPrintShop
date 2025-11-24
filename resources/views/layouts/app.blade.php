@@ -23,5 +23,6 @@
     <p>&copy; {{ date('Y') }} 3DPrintShop. All rights reserved.</p>
   </div>
 </footer>
+@stack('scripts')
 </body>
 </html>

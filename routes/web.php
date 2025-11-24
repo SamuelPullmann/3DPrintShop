@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,10 +20,8 @@ Route::get('/cart', function () {
     return view('cart');
 })->name('cart.show');
 
-Route::post('/login', function () {
-    // handle login
-})->name('login.submit');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
-Route::post('/register', function () {
-    // handle register
-})->name('register.submit');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
