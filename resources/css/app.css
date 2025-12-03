@@ -28,3 +28,155 @@ body { height: 100%; display: flex; flex-direction: column; min-height: 100vh; }
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Home page: filters sidebar + products area */
+.home-layout {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* Sidebar */
+.filters-sidebar {
+    width: 280px;
+    flex: 0 0 280px;
+}
+
+.filters-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem 1rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.filters-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.filters-section {
+    margin-bottom: 1rem;
+}
+
+.filters-section-title {
+    margin: 0 0 0.6rem 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.45rem 0;
+    font-size: 0.95rem;
+    color: #222;
+}
+
+.filters-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+    margin: 0.9rem 0;
+}
+
+.price-range {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* noUiSlider container needs height */
+#price-slider {
+    height: 10px;
+    margin: 0.5rem 0;
+}
+
+.price-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #444;
+    font-weight: 500;
+}
+
+/* Collapsed section state */
+.filters-section.collapsed label,
+.filters-section.collapsed .price-range {
+    display: none;
+}
+
+/* Products area */
+.products-area {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.75rem;
+    box-shadow: 0 6px 14px rgba(7,16,43,0.04);
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.product-img-placeholder {
+    background: linear-gradient(90deg,#eef2f5,#f8fafc);
+    height: 180px;
+    border-radius: 8px;
+    margin-bottom: 0.6rem;
+}
+
+.product-title {
+    font-size: 1rem;
+    margin: 0 0 0.35rem 0;
+}
+
+.product-price {
+    color: #0b2a35;
+    font-weight: 600;
+}
+
+/* Responsive: stack sidebar under 992px */
+@media (max-width: 992px) {
+    .home-layout {
+        flex-direction: column;
+    }
+
+    .filters-sidebar {
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .filters-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* small screens: hide sidebar by default, allow toggle via JS/UI later */
+@media (max-width: 640px) {
+    .filters-sidebar {
+        display: block; /* keep visible, user can collapse sections */
+    }
+}
+
+/* Ensure main content padding doesn't conflict */
+.main-content { padding: 2rem 0; }
