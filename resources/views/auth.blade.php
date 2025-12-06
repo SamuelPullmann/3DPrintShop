@@ -32,7 +32,7 @@
                 {{-- User is NOT logged in --}}
                 <h1 id="auth-title" class="auth-title">Login</h1>
 
-                <div id="login-form" style="display:block;">
+                <div id="login-form">
                     <form method="POST" action="{{ route('login.submit') }}">
                         @csrf
                         <div class="auth-form-group">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
 
-                <div id="register-form" style="display:none;">
+                <div id="register-form">
                     <form method="POST" action="{{ route('register.submit') }}">
                         @csrf
                         <div class="auth-form-group">
@@ -109,8 +109,9 @@
                             @error('password')
                                 <span class="auth-error-text">{{ $message }}</span>
                             @enderror
+                            <span class="auth-error-text" id="register-password-error">Password needs to be at least 8 characters long, use at least 1 number, 1 uppercase and 1 lowercase character.</span>
                         </div>
-                        <button type="submit" class="auth-submit">Register</button>
+                        <button type="submit" class="auth-submit" id="register-button">Register</button>
                     </form>
 
                     <div class="auth-divider">or</div>

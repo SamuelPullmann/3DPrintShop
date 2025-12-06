@@ -2,11 +2,53 @@
 // - Toggle collapse on filter sections when their title is clicked
 // - noUiSlider for price range selection
 // - Preserve filter state in localStorage
+// - Mobile filter toggle (fullscreen overlay)
+// - Auto-reset mobile state on window resize
 
 import noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Mobile filter toggle
+    const mobileToggleBtn = document.getElementById('mobile-filter-toggle');
+    const filtersSidebar = document.getElementById('filters-sidebar');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const productsArea = document.getElementById('products-area');
+
+    // Function to close mobile filter overlay
+    function closeMobileFilter() {
+        if (filtersSidebar) filtersSidebar.classList.remove('open');
+        if (productsArea) productsArea.classList.remove('hidden');
+    }
+
+    if (mobileToggleBtn && filtersSidebar && productsArea) {
+        // Open filter overlay on mobile
+        mobileToggleBtn.addEventListener('click', function () {
+            filtersSidebar.classList.add('open');
+            productsArea.classList.add('hidden');
+        });
+
+        // Close filter overlay and show products
+        if (applyFiltersBtn) {
+            applyFiltersBtn.addEventListener('click', function () {
+                closeMobileFilter();
+                // TODO: Here you can add logic to fetch filtered products from API
+            });
+        }
+    }
+
+    // Handle window resize - reset mobile filter state when resizing to desktop
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            // If window is wider than 640px (desktop), ensure mobile overlay is closed
+            if (window.innerWidth > 640) {
+                closeMobileFilter();
+            }
+        }, 100); // Debounce resize events
+    });
+
     // Collapse/expand filter sections
     document.querySelectorAll('.filters-section-title').forEach(function (titleEl) {
         titleEl.addEventListener('click', function () {

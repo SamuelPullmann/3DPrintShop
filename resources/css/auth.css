@@ -168,3 +168,17 @@
     margin-top: 0.35rem;
     font-weight: 500;
 }
+
+/* Password validation error - hidden by default */
+#register-password-error {
+    display: none;
+}
+
+/* Show/hide forms: moved from inline styles in auth.blade.php */
+#login-form {
+    display: block;
+}
+
+#register-form {
+    display: none;
+}

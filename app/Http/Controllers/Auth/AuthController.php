@@ -41,8 +41,11 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'user',
         ]);
+
+        // Set role manually after creation (security: prevent mass assignment of role)
+        $user->role = 'user';
+        $user->save();
 
         Auth::login($user);
         return redirect('/');
