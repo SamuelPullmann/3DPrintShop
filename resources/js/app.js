@@ -1,5 +1,5 @@
 import './bootstrap';
-import './nav';
+import './Layouts/nav.js';
 import { createApp } from 'vue';
 import App from './App.vue';
 

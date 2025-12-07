@@ -152,4 +152,47 @@
     .nav-actions .nav-link-search {
         display: inline-flex;
     }
+
+    /* Keep a stable nav height on mobile so hiding brand/actions doesn't shrink the bar */
+    /* 6.5rem chosen to roughly match logo (4.5rem) + vertical padding (2rem); adjust if your root font-size differs */
+    .nav-container,
+    .nav-container.search-open {
+        min-height: 6.5rem;
+    }
+
+    /* When mobile search is active we hide brand + actions and show the search input centered */
+    .nav-container.search-open {
+        justify-content: center;
+    }
+
+    .nav-container.search-open .nav-brand,
+    .nav-container.search-open .nav-actions {
+        display: none !important;
+    }
+
+    .nav-container.search-open .nav-search {
+        display: flex !important;
+        flex: 1 1 100%;
+        margin: 0;
+        justify-content: center;
+        padding: 0 0.5rem;
+    }
+
+    .nav-container.search-open .nav-search-wrap {
+        max-width: none;
+        width: 100%;
+    }
+
+    /* Make the input larger and centered on small screens when open */
+    .nav-search-input {
+        width: 100%;
+        padding: 0.7rem 0.9rem 0.7rem 2.6rem;
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+    }
+
+    /* Keep the icon positioned for the input when open */
+    .nav-search-icon {
+        left: 0.85rem;
+    }
 }

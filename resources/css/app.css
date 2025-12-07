@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import './nav.css';
 @import './auth.css';
+@import './home.css';
+@import './admin-product.css';
 
 /* Container for centering content */
 .container {
