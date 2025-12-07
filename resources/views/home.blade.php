@@ -136,11 +136,10 @@
                         @endif
                         <h3 class="product-title">{{ $product->name }}</h3>
                         <p class="product-price">€{{ number_format($product->price, 2) }}</p>
-                        <span class="product-type" style="display:none;">{{ $product->product_type }}</span>
-                        @if($product->category)
-                            <span class="product-category" style="display:none;">{{ $product->category }}</span>
-                        @endif
-                        <span class="product-description" style="display:none;">{{ $product->description }}</span>
+                        <button class="add-to-cart-btn" data-product-id="{{ $product->product_id }}" aria-label="Add to cart">
+                            <img src="{{ asset('images/cart.png') }}" alt="Cart" class="cart-icon">
+                            Add to Cart
+                        </button>
                     </article>
                 @empty
                     <div class="no-products">
