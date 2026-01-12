@@ -12,17 +12,59 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::orderBy('created_at', 'desc')->paginate(9);
+        $query = Product::query();
+
+        // Filter by product type (digital/physical) - only if checkboxes are selected
+        if ($request->has('type') && is_array($request->type) && count($request->type) > 0) {
+            $types = array_map(function($t) {
+                return ucfirst(strtolower($t));
+            }, $request->type);
+            // Include products with matching type OR null type
+            $query->where(function($q) use ($types) {
+                $q->whereIn('product_type', $types)
+                  ->orWhereNull('product_type');
+            });
+        }
+
+        // Filter by categories - only if checkboxes are selected
+        if ($request->has('cat') && is_array($request->cat) && count($request->cat) > 0) {
+            // Include products with matching category OR null category
+            $query->where(function($q) use ($request) {
+                $q->whereIn('category', $request->cat)
+                  ->orWhereNull('category');
+            });
+        }
+
+        // Get max price for filter range
+        $maxPrice = Product::max('price') ?? 100;
+        $maxPrice = ceil($maxPrice); // Round up to nearest integer
+
+        // Filter by price range
+        if ($request->has('price_min') && $request->price_min > 0) {
+            $query->where('price', '>=', $request->price_min);
+        }
+        if ($request->has('price_max') && $request->price_max < $maxPrice) {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        $products = $query->orderBy('created_at', 'desc')->paginate(9);
 
         // If it's an AJAX request, return JSON
-        if (request()->wantsJson()) {
-            return response()->json($products);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'data' => $products->items(),
+                'max_price' => $maxPrice,
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
+            ]);
         }
 
         // Otherwise, return the view
-        return view('home', compact('products'));
+        return view('home', compact('products', 'maxPrice'));
     }
 
     /**

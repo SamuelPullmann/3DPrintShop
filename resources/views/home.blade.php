@@ -12,8 +12,8 @@
 
                 <div class="filters-section">
                     <h4 class="filters-section-title">Product Type</h4>
-                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="digital" checked> Digital Model</label>
-                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="physical" checked> Physical Model</label>
+                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="digital"> Digital Model</label>
+                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="physical"> Physical Model</label>
                 </div>
 
                 <div class="filters-divider"></div>
@@ -32,10 +32,10 @@
                 <div class="filters-section">
                     <h4 class="filters-section-title">Price Range</h4>
                     <div class="price-range">
-                        <div id="price-slider"></div>
+                        <div id="price-slider" data-max-price="{{ $maxPrice }}"></div>
                         <div class="price-values">
                             <span id="price-min-label">€0</span>
-                            <span id="price-max-label">€100</span>
+                            <span id="price-max-label">€{{ $maxPrice }}</span>
                         </div>
                     </div>
                 </div>
