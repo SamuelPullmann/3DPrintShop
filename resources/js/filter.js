@@ -122,9 +122,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return `
                 <article class="product-card" data-product-id="${product.product_id}">
                     ${adminActions}
-                    ${imageHtml}
-                    <h3 class="product-title">${product.name}</h3>
-                    <p class="product-price">€${parseFloat(product.price).toFixed(2)}</p>
+                    <a href="/products/${product.product_id}" class="product-link">
+                        ${imageHtml}
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-price">€${parseFloat(product.price).toFixed(2)}</p>
+                    </a>
                     <button class="add-to-cart-btn" data-product-id="${product.product_id}" aria-label="Add to cart">
                         <img src="/images/cart.png" alt="Cart" class="cart-icon">
                         Add to Cart

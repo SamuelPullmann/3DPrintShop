@@ -20,4 +20,10 @@ class Product extends Model
     protected $casts = [
         'price' => 'decimal:2',
     ];
+
+    // Relationship to Reviews
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'product_id', 'product_id');
+    }
 }

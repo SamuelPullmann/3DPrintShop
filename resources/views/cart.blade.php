@@ -4,5 +4,5 @@
 
 @section('content')
     <h1>Cart</h1>
-    <p>Your cart is empty (placeholder view).</p>
+    <p>Your cart is empty.</p>
 @endsection

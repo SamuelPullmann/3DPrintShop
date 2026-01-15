@@ -8,6 +8,7 @@
     <title>@yield('title', '3DPrintShop')</title>
 
     @vite(['resources/css/app.css', 'resources/css/nav.css', 'resources/js/app.js', 'resources/js/nav.js'])
+    @stack('styles')
 </head>
 <body>
 @include('partials.nav')

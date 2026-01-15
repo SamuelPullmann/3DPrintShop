@@ -77,7 +77,8 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'product_type' => 'required|in:Digital,Physical',
-            'category' => 'nullable|in:miniatures,architecture,art,functional,toys',
+            'categories' => 'nullable|array',
+            'categories.*' => 'in:miniatures,architecture,art,functional,toys',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -86,6 +87,12 @@ class ProductController extends Controller
         }
 
         $data = $validator->validated();
+
+        // Convert categories array to comma-separated string
+        if (isset($data['categories']) && is_array($data['categories'])) {
+            $data['category'] = implode(',', $data['categories']);
+            unset($data['categories']);
+        }
 
         // Handle image upload - store in previewImages subdirectory
         if ($request->hasFile('image')) {
@@ -108,6 +115,20 @@ class ProductController extends Controller
     }
 
     /**
+     * Display the product details page.
+     */
+    public function showPage(string $id)
+    {
+        $product = Product::with(['reviews.user'])->findOrFail($id);
+
+        // Calculate average rating and count
+        $averageRating = $product->reviews->avg('rating');
+        $reviewsCount = $product->reviews->count();
+
+        return view('product-details', compact('product', 'averageRating', 'reviewsCount'));
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
@@ -119,7 +140,8 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'sometimes|required|numeric|min:0',
             'product_type' => 'sometimes|required|in:Digital,Physical',
-            'category' => 'nullable|in:miniatures,architecture,art,functional,toys',
+            'categories' => 'nullable|array',
+            'categories.*' => 'in:miniatures,architecture,art,functional,toys',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -128,6 +150,15 @@ class ProductController extends Controller
         }
 
         $data = $validator->validated();
+
+        // Convert categories array to comma-separated string
+        if (isset($data['categories']) && is_array($data['categories'])) {
+            $data['category'] = implode(',', $data['categories']);
+            unset($data['categories']);
+        } elseif (isset($data['categories']) && empty($data['categories'])) {
+            $data['category'] = null;
+            unset($data['categories']);
+        }
 
         // Handle image upload - store in previewImages subdirectory
         if ($request->hasFile('image')) {
@@ -176,5 +207,42 @@ class ProductController extends Controller
         $path = Storage::disk('local')->path($product->file_path);
 
         return response()->file($path);
+    }
+
+    /**
+     * Store a new review
+     */
+    public function storeReview(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|exists:products,product_id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review_text' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return response()->json(['error' => 'You must be logged in to write a review'], 401);
+        }
+
+        // Create the review
+        $review = \App\Models\Review::create([
+            'product_id' => $request->product_id,
+            'user_id' => auth()->id(),
+            'rating' => $request->rating,
+            'review_text' => $request->review_text,
+        ]);
+
+        // Load user relationship
+        $review->load('user');
+
+        return response()->json([
+            'message' => 'Review submitted successfully!',
+            'review' => $review
+        ], 201);
     }
 }
