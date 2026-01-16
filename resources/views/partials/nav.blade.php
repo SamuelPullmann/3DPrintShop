@@ -29,8 +29,15 @@
             <a href="{{ route('search') }}" class="nav-link nav-link-search" aria-label="Search">
                 <img src="{{ asset('images/magnifying-glass.png') }}" alt="Search" class="nav-img">
             </a>
-            <a href="{{ route('cart.show') }}" class="nav-link" aria-label="Cart">
+            <a href="{{ route('cart.show') }}" class="nav-link nav-link-cart" aria-label="Cart">
                 <img src="{{ asset('images/cart.png') }}" alt="Cart" class="nav-img">
+                @php
+                    $cart = session()->get('cart', []);
+                    $cartCount = count($cart);
+                @endphp
+                @if($cartCount > 0)
+                    <span class="cart-badge">{{ $cartCount }}</span>
+                @endif
             </a>
             <a href="{{ route('auth.show') }}" class="nav-link" aria-label="Account">
                 <img src="{{ asset('images/account.png') }}" alt="Account" class="nav-img">

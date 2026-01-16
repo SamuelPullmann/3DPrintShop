@@ -1,0 +1,448 @@
+@import 'tailwindcss';
+
+/* Product Details Page Styles */
+
+.product-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.product-details-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.03);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.product-details-image-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-details-img,
+.product-details-img-placeholder {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    background: linear-gradient(90deg,#eef2f5,#f8fafc);
+}
+
+.product-details-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.product-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #00bcd4 0%, #9c27b0 100%);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    align-self: flex-start;
+}
+
+.product-details-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #0b2a35;
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: 1.25rem;
+}
+
+.reviews-count {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.product-details-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0b2a35;
+    margin: 0.5rem 0;
+}
+
+.product-details-add-to-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #00bcd4 0%, #9c27b0 100%);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.product-details-add-to-cart:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.product-details-add-to-cart:active {
+    transform: translateY(0);
+}
+
+.product-details-add-to-cart .cart-icon {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+.product-description {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.product-description p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+.product-categories {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.product-categories h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: #0b2a35;
+}
+
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.category-tag {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(90deg,#eef2f5,#f8fafc);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #0b2a35;
+}
+
+/* Customer Reviews Section */
+.customer-reviews-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.customer-reviews-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem 0;
+    color: #0b2a35;
+}
+
+.reviews-summary {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(90deg,#eef2f5,#f8fafc);
+    border-radius: 10px;
+}
+
+.reviews-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.score-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #0b2a35;
+}
+
+.score-stars {
+    color: #ffc107;
+    font-size: 1.5rem;
+}
+
+.score-count {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    padding: 1.5rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.reviewer-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00bcd4 0%, #9c27b0 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.reviewer-info {
+    flex: 1;
+}
+
+.reviewer-name {
+    font-weight: 600;
+    color: #0b2a35;
+    margin-bottom: 0.25rem;
+}
+
+.review-date {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+/* Delete Review Button (Admin Only) */
+.delete-review-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.2s;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+}
+
+.delete-review-btn:hover {
+    background: #fee;
+    color: #f44336;
+}
+
+.delete-review-btn svg {
+    display: block;
+}
+
+.review-stars {
+    color: #ffc107;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.review-text {
+    color: #333;
+    line-height: 1.6;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* Add Review Section */
+.add-review-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.03);
+    margin-top: 2rem;
+}
+
+.add-review-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem 0;
+    color: #0b2a35;
+}
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.review-form label {
+    font-weight: 600;
+    color: #0b2a35;
+    font-size: 1rem;
+}
+
+.star-rating-input {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.star-rating-input input[type="radio"] {
+    display: none;
+}
+
+.star-rating-input label {
+    font-size: 2.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.1s;
+    line-height: 1;
+}
+
+.star-rating-input label.filled {
+    color: #ffc107;
+}
+
+.review-form textarea {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 120px;
+}
+
+.review-form textarea:focus {
+    outline: none;
+    border-color: #00bcd4;
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+}
+
+.submit-review-btn {
+    align-self: flex-start;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #00bcd4 0%, #9c27b0 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.submit-review-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.submit-review-btn:active {
+    transform: translateY(0);
+}
+
+.submit-review-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(90deg,#eef2f5,#f8fafc);
+    border-radius: 10px;
+}
+
+.login-prompt p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+.login-prompt a {
+    color: #00bcd4;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.login-prompt a:hover {
+    color: #0097a7;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-details-card {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .product-details-title {
+        font-size: 1.5rem;
+    }
+
+    .product-details-price {
+        font-size: 2rem;
+    }
+
+    .customer-reviews-section {
+        padding: 1.5rem;
+    }
+
+    .customer-reviews-section h2 {
+        font-size: 1.5rem;
+    }
+}

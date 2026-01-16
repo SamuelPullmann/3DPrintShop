@@ -25,8 +25,14 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Product CRUD routes
-Route::apiResource('products', ProductController::class);
+// Product API routes - must be before the detail page route
+Route::prefix('api')->group(function () {
+    Route::apiResource('products', ProductController::class);
+    Route::post('reviews', [ProductController::class, 'storeReview'])->name('reviews.store');
+});
 
 // Product image route (lazy loading)
 Route::get('/products/{id}/image', [ProductController::class, 'image'])->name('product.image');
+
+// Product details page - must be AFTER API routes to avoid conflicts
+Route::get('/products/{id}', [ProductController::class, 'showPage'])->name('product.details');

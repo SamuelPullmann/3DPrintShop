@@ -2,6 +2,10 @@
 
 @section('title', 'Home')
 
+@push('styles')
+    @vite(['resources/css/home.css'])
+@endpush
+
 @section('content')
     <div class="home-layout">
         <button id="mobile-filter-toggle" class="mobile-filter-toggle">Filter</button>
@@ -12,8 +16,8 @@
 
                 <div class="filters-section">
                     <h4 class="filters-section-title">Product Type</h4>
-                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="digital" checked> Digital Model</label>
-                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="physical" checked> Physical Model</label>
+                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="digital"> Digital Model</label>
+                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="physical"> Physical Model</label>
                 </div>
 
                 <div class="filters-divider"></div>
@@ -32,10 +36,10 @@
                 <div class="filters-section">
                     <h4 class="filters-section-title">Price Range</h4>
                     <div class="price-range">
-                        <div id="price-slider"></div>
+                        <div id="price-slider" data-max-price="{{ $maxPrice }}"></div>
                         <div class="price-values">
                             <span id="price-min-label">€0</span>
-                            <span id="price-max-label">€100</span>
+                            <span id="price-max-label">€{{ $maxPrice }}</span>
                         </div>
                     </div>
                 </div>
@@ -81,15 +85,29 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="product-category">Category</label>
-                                <select id="product-category" name="category">
-                                    <option value="">Select Category (Optional)</option>
-                                    <option value="miniatures">Miniatures</option>
-                                    <option value="architecture">Architecture</option>
-                                    <option value="art">Art & Sculptures</option>
-                                    <option value="functional">Functional Items</option>
-                                    <option value="toys">Toys & Figurines</option>
-                                </select>
+                                <label>Categories</label>
+                                <div class="category-checkboxes">
+                                    <label class="checkbox-row">
+                                        <input type="checkbox" name="categories[]" value="miniatures">
+                                        Miniatures
+                                    </label>
+                                    <label class="checkbox-row">
+                                        <input type="checkbox" name="categories[]" value="architecture">
+                                        Architecture
+                                    </label>
+                                    <label class="checkbox-row">
+                                        <input type="checkbox" name="categories[]" value="art">
+                                        Art & Sculptures
+                                    </label>
+                                    <label class="checkbox-row">
+                                        <input type="checkbox" name="categories[]" value="functional">
+                                        Functional Items
+                                    </label>
+                                    <label class="checkbox-row">
+                                        <input type="checkbox" name="categories[]" value="toys">
+                                        Toys & Figurines
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -126,16 +144,18 @@
                                 </div>
                             @endif
                         @endauth
-                        @if($product->file_path)
-                            <img src="{{ route('product.image', $product->product_id) }}"
-                                 alt="{{ $product->name }}"
-                                 class="product-img"
-                                 loading="lazy">
-                        @else
-                            <div class="product-img-placeholder"></div>
-                        @endif
-                        <h3 class="product-title">{{ $product->name }}</h3>
-                        <p class="product-price">€{{ number_format($product->price, 2) }}</p>
+                        <a href="{{ route('product.details', $product->product_id) }}" class="product-link">
+                            @if($product->file_path)
+                                <img src="{{ route('product.image', $product->product_id) }}"
+                                     alt="{{ $product->name }}"
+                                     class="product-img"
+                                     loading="lazy">
+                            @else
+                                <div class="product-img-placeholder"></div>
+                            @endif
+                            <h3 class="product-title">{{ $product->name }}</h3>
+                            <p class="product-price">€{{ number_format($product->price, 2) }}</p>
+                        </a>
                         <button class="add-to-cart-btn" data-product-id="{{ $product->product_id }}" aria-label="Add to cart">
                             <img src="{{ asset('images/cart.png') }}" alt="Cart" class="cart-icon">
                             Add to Cart

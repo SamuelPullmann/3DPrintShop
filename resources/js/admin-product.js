@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         submitBtn.textContent = editingProductId ? 'Updating...' : 'Adding...';
 
         try {
-            const url = editingProductId ? `/products/${editingProductId}` : '/products';
+            const url = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
             const method = editingProductId ? 'POST' : 'POST';
 
             // For update, we need to add _method field for Laravel
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 // Fetch product data
-                const response = await fetch(`/products/${productId}`, {
+                const response = await fetch(`/api/products/${productId}`, {
                     headers: {
                         'Accept': 'application/json',
                     }
@@ -142,7 +142,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('product-name').value = product.name || '';
                 document.getElementById('product-price').value = product.price || '';
                 document.getElementById('product-type').value = product.product_type || '';
-                document.getElementById('product-category').value = product.category || '';
+
+                // Handle category - set the dropdown value
+                const categorySelect = document.getElementById('product-category');
+                if (categorySelect && product.category) {
+                    // If category is a string with comma-separated values, take the first one
+                    const category = product.category.split(',')[0].trim();
+                    categorySelect.value = category;
+                } else if (categorySelect) {
+                    categorySelect.value = '';
+                }
+
                 document.getElementById('product-description').value = product.description || '';
 
                 // Set editing mode
@@ -176,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             try {
-                const response = await fetch(`/products/${productId}`, {
+                const response = await fetch(`/api/products/${productId}`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

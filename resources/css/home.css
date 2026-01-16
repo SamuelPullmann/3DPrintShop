@@ -97,8 +97,9 @@
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1rem;
+    max-width: 100%;
 }
 
 .product-card {
@@ -110,8 +111,21 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    min-width: 0;
     width: 100%;
+    max-width: 100%;
+}
+
+/* Product link wrapper */
+.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-link:hover .product-title {
+    color: #00bcd4;
 }
 
 .product-img,
@@ -130,6 +144,7 @@
     font-size: 1rem;
     margin: 0 0 0.35rem 0;
     word-wrap: break-word;
+    transition: color 0.2s;
 }
 
 .product-price {
