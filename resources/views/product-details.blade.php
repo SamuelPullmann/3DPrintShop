@@ -104,15 +104,24 @@
                                     <div class="reviewer-name">{{ $review->user->name }}</div>
                                     <div class="review-date">{{ $review->created_at->format('M d, Y') }}</div>
                                 </div>
-                                @auth
-                                    @if(Auth::user()->role === 'admin')
-                                        <button class="delete-review-btn" data-review-id="{{ $review->review_id }}" title="Delete review">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 0 1 1.334-1.334h2.666a1.333 1.333 0 0 1 1.334 1.334V4m2 0v9.333a1.333 1.333 0 0 1-1.334 1.334H4.667a1.333 1.333 0 0 1-1.334-1.334V4h9.334Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                        </button>
-                                    @endif
-                                @endauth
+                                <div class="review-actions">
+                                    @auth
+                                        @if($review->user_id === Auth::id() || Auth::user()->role === 'admin')
+                                            @if($review->user_id === Auth::id())
+                                                <button class="edit-review-btn" data-review-id="{{ $review->review_id }}" title="Edit review">
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M11.333 2a1.886 1.886 0 1 1 2.667 2.667L4.667 14H2v-2.667L11.333 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                            @endif
+                                            <button class="delete-review-btn" data-review-id="{{ $review->review_id }}" title="Delete review">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                    <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 0 1 1.334-1.334h2.666a1.333 1.333 0 0 1 1.334 1.334V4m2 0v9.333a1.333 1.333 0 0 1-1.334 1.334H4.667a1.333 1.333 0 0 1-1.334-1.334V4h9.334Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </button>
+                                        @endif
+                                    @endauth
+                                </div>
                             </div>
                             <div class="review-stars">
                                 @for($i = 1; $i <= 5; $i++)
@@ -123,7 +132,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <div class="review-text">
+                            <div class="review-text" data-review-text="{{ $review->review_text }}" data-review-rating="{{ $review->rating }}">
                                 {{ $review->review_text }}
                             </div>
                         </div>
@@ -132,7 +141,7 @@
             </div>
         @endif
 
-        <!-- Add Review Form Section - MOVED ABOVE existing reviews list -->
+        <!-- Add Review Form Section -->
         <div class="add-review-section">
             <h2>Write a Review</h2>
 

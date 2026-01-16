@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!reviewForm) return;
 
+    let editingReviewId = null; // Track if we're editing a review
+
     // Star rating functionality - VANILLA JS, NO VUE!
     const starInputs = document.querySelectorAll('.star-rating-input input[type="radio"]');
     const starLabels = document.querySelectorAll('.star-rating-input label');
@@ -59,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Disable button during submission
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
+        submitBtn.textContent = editingReviewId ? 'Updating...' : 'Submitting...';
 
         const formData = new FormData(reviewForm);
         const data = {
@@ -69,36 +71,51 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         try {
-            const response = await fetch('/api/reviews', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
+            let response;
+
+            if (editingReviewId) {
+                // Update existing review
+                response = await fetch(`/api/reviews/${editingReviewId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        rating: data.rating,
+                        review_text: data.review_text
+                    })
+                });
+            } else {
+                // Create new review
+                response = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+            }
 
             const result = await response.json();
 
             if (response.ok) {
-                alert('Thank you for your review! Reloading page...');
-                // Reload page to show the new review
                 location.reload();
             } else {
                 // Handle validation errors
                 if (result.errors) {
-                    const errorMessages = Object.values(result.errors).flat().join('\n');
-                    alert('Validation errors:\n' + errorMessages);
+                    console.error('Validation errors:', result.errors);
                 } else if (result.error) {
-                    alert('Error: ' + result.error);
+                    console.error('Error:', result.error);
                 } else {
-                    alert('Failed to submit review. Please try again.');
+                    console.error('Failed to submit review');
                 }
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Network error. Please check your connection and try again.');
         } finally {
             // Re-enable button
             submitBtn.disabled = false;
@@ -106,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Handle delete review buttons (Admin only)
+    // Handle delete review buttons
     document.addEventListener('click', async function(e) {
         if (e.target.closest('.delete-review-btn')) {
             const btn = e.target.closest('.delete-review-btn');
@@ -128,26 +145,66 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Remove the review card from DOM with animation
-                    const reviewCard = document.querySelector(`[data-review-id="${reviewId}"]`);
-                    if (reviewCard) {
-                        reviewCard.style.opacity = '0';
-                        reviewCard.style.transform = 'scale(0.95)';
-                        reviewCard.style.transition = 'all 0.3s';
-
-                        setTimeout(() => {
-                            reviewCard.remove();
-                            // Reload page to update review count and average rating
-                            location.reload();
-                        }, 300);
-                    }
+                    location.reload();
                 } else {
-                    alert('Error: ' + (result.error || 'Failed to delete review'));
+                    console.error('Error:', result.error || 'Failed to delete review');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Network error. Please check your connection and try again.');
             }
+        }
+
+        // Handle edit review buttons
+        if (e.target.closest('.edit-review-btn')) {
+            const btn = e.target.closest('.edit-review-btn');
+            const reviewId = btn.dataset.reviewId;
+            const reviewCard = document.querySelector(`[data-review-id="${reviewId}"]`);
+            const reviewTextDiv = reviewCard.querySelector('.review-text');
+            const currentText = reviewTextDiv.dataset.reviewText;
+            const currentRating = parseInt(reviewTextDiv.dataset.reviewRating);
+
+            // Set editing mode
+            editingReviewId = reviewId;
+
+            // Populate the form with current review data
+            reviewForm.querySelector('#review_text').value = currentText;
+
+            // Set the rating
+            const ratingInput = reviewForm.querySelector(`input[name="rating"][value="${currentRating}"]`);
+            if (ratingInput) {
+                ratingInput.checked = true;
+                updateStars(currentRating);
+            }
+
+            // Update form heading and button text
+            const formHeading = document.querySelector('.add-review-section h2');
+            const submitBtn = reviewForm.querySelector('.submit-review-btn');
+            formHeading.textContent = 'Edit Your Review';
+            submitBtn.textContent = 'Update Review';
+
+            // Add cancel button if it doesn't exist
+            let cancelBtn = reviewForm.querySelector('.cancel-edit-review-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.className = 'cancel-edit-review-btn';
+                cancelBtn.textContent = 'Cancel';
+                submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
+            }
+
+            // Scroll to form
+            document.querySelector('.add-review-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Cancel edit handler
+            cancelBtn.addEventListener('click', function() {
+                // Reset form
+                editingReviewId = null;
+                reviewForm.reset();
+                updateStars(0);
+                formHeading.textContent = 'Write a Review';
+                submitBtn.textContent = 'Submit Review';
+                cancelBtn.remove();
+            });
         }
     });
 });

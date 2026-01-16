@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class ProductController
 {
@@ -70,23 +71,9 @@ class ProductController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'product_type' => 'required|in:Digital,Physical',
-            'category' => 'nullable|string|in:Miniatures,Architecture,Art & Sculptures,Functional Items,Toys & Figurines',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $data = $validator->validated();
-
+        $data = $request->validated();
 
         // Handle image upload - store in previewImages subdirectory
         if ($request->hasFile('image')) {
@@ -96,7 +83,12 @@ class ProductController
 
         $product = Product::create($data);
 
-        return response()->json($product, 201);
+        // Return JSON for API or redirect for web form
+        if ($request->wantsJson()) {
+            return response()->json($product, 201);
+        }
+
+        return redirect()->route('home')->with('success', 'Product added successfully!');
     }
 
     /**
@@ -125,25 +117,10 @@ class ProductController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateProductRequest $request, string $id)
     {
         $product = Product::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'sometimes|required|numeric|min:0',
-            'product_type' => 'sometimes|required|in:Digital,Physical',
-            'category' => 'nullable|string|in:Miniatures,Architecture,Art & Sculptures,Functional Items,Toys & Figurines',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $data = $validator->validated();
-
+        $data = $request->validated();
 
         // Handle image upload - store in previewImages subdirectory
         if ($request->hasFile('image')) {
@@ -158,7 +135,12 @@ class ProductController
 
         $product->update($data);
 
-        return response()->json($product);
+        // Return JSON for API or redirect for web form
+        if ($request->wantsJson()) {
+            return response()->json($product);
+        }
+
+        return redirect()->route('home')->with('success', 'Product updated successfully!');
     }
 
     /**
@@ -166,6 +148,11 @@ class ProductController
      */
     public function destroy(string $id)
     {
+        // Check if user is admin
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $product = Product::findOrFail($id);
 
         // Delete image if exists
@@ -194,65 +181,5 @@ class ProductController
         $path = Storage::disk('local')->path($product->file_path);
 
         return response()->file($path);
-    }
-
-    /**
-     * Store a new review
-     */
-    public function storeReview(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'product_id' => 'required|exists:products,product_id',
-            'rating' => 'required|integer|min:1|max:5',
-            'review_text' => 'required|string|max:1000',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        // Check if user is authenticated
-        if (!auth()->check()) {
-            return response()->json(['error' => 'You must be logged in to write a review'], 401);
-        }
-
-        // Create the review
-        $review = \App\Models\Review::create([
-            'product_id' => $request->product_id,
-            'user_id' => auth()->id(),
-            'rating' => $request->rating,
-            'review_text' => $request->review_text,
-        ]);
-
-        // Load user relationship
-        $review->load('user');
-
-        return response()->json([
-            'message' => 'Review submitted successfully!',
-            'review' => $review
-        ], 201);
-    }
-
-    /**
-     * Delete a review (Admin only)
-     */
-    public function deleteReview($reviewId)
-    {
-        // Check if user is admin
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        $review = \App\Models\Review::find($reviewId);
-
-        if (!$review) {
-            return response()->json(['error' => 'Review not found'], 404);
-        }
-
-        $review->delete();
-
-        return response()->json([
-            'message' => 'Review deleted successfully!'
-        ], 200);
     }
 }

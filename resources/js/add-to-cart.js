@@ -46,13 +46,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         this.disabled = false;
                     }, 2000);
                 } else {
-                    alert('Failed to add product to cart. Please try again.');
+                    console.error('Failed to add product to cart');
                     this.innerHTML = originalText;
                     this.disabled = false;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Network error. Please check your connection and try again.');
                 this.innerHTML = originalText;
                 this.disabled = false;
             }
@@ -80,4 +79,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-

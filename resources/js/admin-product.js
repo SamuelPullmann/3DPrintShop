@@ -1,4 +1,4 @@
-// Admin Product Management - Toggle Add Product Form
+// Admin Product Management - Toggle Add Product Form (No AJAX)
 
 document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = document.getElementById('toggle-add-product');
@@ -8,15 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!toggleBtn || !addProductForm) return;
 
-    let editingProductId = null; // Track if we're editing a product
-
     // Toggle form visibility
     toggleBtn.addEventListener('click', function () {
         if (addProductForm.classList.contains('show')) {
             addProductForm.classList.remove('show');
             toggleBtn.textContent = '+ Add Product';
-            editingProductId = null;
             productForm.reset();
+            // Clear any edit mode data
+            delete productForm.dataset.editMode;
+            delete productForm.dataset.productId;
+            productForm.action = productForm.dataset.originalAction || '/products';
+            productForm.querySelector('[name="_method"]')?.remove();
         } else {
             addProductForm.classList.add('show');
             toggleBtn.textContent = '− Hide Form';
@@ -30,70 +32,113 @@ document.addEventListener('DOMContentLoaded', function () {
         addProductForm.classList.remove('show');
         toggleBtn.textContent = '+ Add Product';
         productForm.reset();
-        editingProductId = null;
-        productForm.querySelector('.btn-submit').textContent = 'Add Product';
+        // Clear any edit mode data
+        delete productForm.dataset.editMode;
+        delete productForm.dataset.productId;
+        productForm.action = productForm.dataset.originalAction || '/products';
+        productForm.querySelector('[name="_method"]')?.remove();
     });
 
-    // Form submit handler - send to backend
-    productForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
+    // Store original action for resetting
+    if (!productForm.dataset.originalAction) {
+        productForm.dataset.originalAction = productForm.action;
+    }
+
+    // Handle product form submission via AJAX
+    productForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // PREVENT normal form submit!
 
         const formData = new FormData(productForm);
-        const submitBtn = productForm.querySelector('.btn-submit');
-        const originalBtnText = submitBtn.textContent;
+        const isEditMode = productForm.dataset.editMode === 'true';
+        const productId = productForm.dataset.productId;
 
-        // Disable button during submission
-        submitBtn.disabled = true;
-        submitBtn.textContent = editingProductId ? 'Updating...' : 'Adding...';
+        const url = isEditMode ? `/products/${productId}` : '/products';
 
-        try {
-            const url = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
-            const method = editingProductId ? 'POST' : 'POST';
-
-            // For update, we need to add _method field for Laravel
-            if (editingProductId) {
-                formData.append('_method', 'PUT');
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                'Accept': 'application/json'
             }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(product => {
+            if (isEditMode) {
+                // For edit mode, reload to update the product
+                window.location.reload();
+            } else {
+                // For add mode, dynamically add product to grid
+                addProductToGrid(product);
 
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Success - show message and reset form
-                alert(editingProductId ? 'Product updated successfully!' : 'Product added successfully!');
+                // Reset and hide form
                 productForm.reset();
                 addProductForm.classList.remove('show');
                 toggleBtn.textContent = '+ Add Product';
-                editingProductId = null;
-                productForm.querySelector('.btn-submit').textContent = 'Add Product';
-
-                // Reload page to show changes
-                location.reload();
-            } else {
-                // Validation errors
-                if (data.errors) {
-                    const errorMessages = Object.values(data.errors).flat().join('\n');
-                    alert('Validation errors:\n' + errorMessages);
-                } else {
-                    alert('Error saving product. Please try again.');
-                }
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Network error. Please check your connection and try again.');
-        } finally {
-            // Re-enable button
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-        }
+        })
+        .catch(error => {
+            console.error('Error saving product:', error);
+            if (error.errors) {
+                let errorMessage = 'Validation errors:\n';
+                Object.keys(error.errors).forEach(key => {
+                    errorMessage += `- ${error.errors[key].join('\n- ')}\n`;
+                });
+                alert(errorMessage);
+            } else {
+                alert('Error saving product. Please try again.');
+            }
+        });
     });
+
+    // Function to add product to grid
+    function addProductToGrid(product) {
+        const productsGrid = document.getElementById('products-grid');
+
+        // Remove "no products" message if exists
+        const noProducts = productsGrid.querySelector('.no-products');
+        if (noProducts) {
+            noProducts.remove();
+        }
+
+        const productCard = document.createElement('article');
+        productCard.className = 'product-card';
+        productCard.setAttribute('data-product-id', product.product_id);
+
+        const isAdmin = document.querySelector('.product-actions-menu') !== null;
+
+        productCard.innerHTML = `
+            ${isAdmin ? `
+                <div class="product-actions-menu">
+                    <button class="product-menu-btn" aria-label="Product options">⋮</button>
+                    <div class="product-dropdown">
+                        <button class="product-dropdown-item edit-product-btn" data-product-id="${product.product_id}">Edit</button>
+                        <button class="product-dropdown-item delete-product-btn" data-product-id="${product.product_id}">Delete</button>
+                    </div>
+                </div>
+            ` : ''}
+            <a href="/products/${product.product_id}/details" class="product-link">
+                ${product.file_path ?
+                    `<img src="/products/${product.product_id}/image" alt="${product.name}" class="product-img" loading="lazy">` :
+                    `<div class="product-img-placeholder"></div>`
+                }
+                <h3 class="product-title">${product.name}</h3>
+                <p class="product-price">€${parseFloat(product.price).toFixed(2)}</p>
+            </a>
+            <button class="add-to-cart-btn" data-product-id="${product.product_id}" aria-label="Add to cart">
+                <img src="/images/cart.png" alt="Cart" class="cart-icon">
+                Add to Cart
+            </button>
+        `;
+
+        // Add to beginning of grid
+        productsGrid.insertBefore(productCard, productsGrid.firstChild);
+    }
 
     // Dropdown menu functionality
     document.addEventListener('click', function (e) {
@@ -120,110 +165,94 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Edit product button
-    document.addEventListener('click', async function (e) {
+    // Edit product button handler
+    document.addEventListener('click', function (e) {
         if (e.target.closest('.edit-product-btn')) {
             const btn = e.target.closest('.edit-product-btn');
             const productId = btn.dataset.productId;
 
-            try {
-                // Fetch product data
-                const response = await fetch(`/api/products/${productId}`, {
-                    headers: {
-                        'Accept': 'application/json',
+            // Fetch product data
+            fetch(`/products/${productId}`)
+                .then(response => response.json())
+                .then(product => {
+                    // Populate form with product data
+                    document.getElementById('product-name').value = product.name;
+                    document.getElementById('product-price').value = product.price;
+                    document.getElementById('product-type').value = product.product_type || '';
+                    document.getElementById('product-category').value = product.category || '';
+                    document.getElementById('product-description').value = product.description || '';
+
+                    // Change form to edit mode
+                    productForm.dataset.editMode = 'true';
+                    productForm.dataset.productId = productId;
+                    productForm.action = `/products/${productId}`;
+
+                    // Add PUT method
+                    let methodInput = productForm.querySelector('[name="_method"]');
+                    if (!methodInput) {
+                        methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'PUT';
+                        productForm.appendChild(methodInput);
                     }
+
+                    // Show form and update button text
+                    addProductForm.classList.add('show');
+                    toggleBtn.textContent = '− Hide Form';
+                    productForm.querySelector('.btn-submit').textContent = 'Update Product';
+
+                    // Scroll to form
+                    addProductForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                    // Close dropdown
+                    document.querySelectorAll('.product-dropdown.show').forEach(dropdown => {
+                        dropdown.classList.remove('show');
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching product:', error);
+                    alert('Error loading product data');
                 });
-
-                if (!response.ok) throw new Error('Failed to fetch product');
-
-                const product = await response.json();
-
-                // Populate form with product data
-                document.getElementById('product-name').value = product.name || '';
-                document.getElementById('product-price').value = product.price || '';
-                document.getElementById('product-type').value = product.product_type || '';
-
-                // Handle category - set the dropdown value
-                const categorySelect = document.getElementById('product-category');
-                if (categorySelect && product.category) {
-                    // If category is a string with comma-separated values, take the first one
-                    const category = product.category.split(',')[0].trim();
-                    categorySelect.value = category;
-                } else if (categorySelect) {
-                    categorySelect.value = '';
-                }
-
-                document.getElementById('product-description').value = product.description || '';
-
-                // Set editing mode
-                editingProductId = productId;
-                productForm.querySelector('.btn-submit').textContent = 'Update Product';
-
-                // Show form
-                addProductForm.classList.add('show');
-                toggleBtn.textContent = '− Hide Form';
-                addProductForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-                // Close dropdown
-                document.querySelectorAll('.product-dropdown.show').forEach(dropdown => {
-                    dropdown.classList.remove('show');
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to load product data. Please try again.');
-            }
         }
     });
 
-    // Delete product button
-    document.addEventListener('click', async function (e) {
+    // Delete product button handler
+    document.addEventListener('click', function (e) {
         if (e.target.closest('.delete-product-btn')) {
             const btn = e.target.closest('.delete-product-btn');
             const productId = btn.dataset.productId;
 
-            if (!confirm('Are you sure you want to delete this product?')) {
-                return;
-            }
+            if (confirm('Are you sure you want to delete this product?')) {
+                const token = document.querySelector('meta[name="csrf-token"]')?.content;
 
-            try {
-                const response = await fetch(`/api/products/${productId}`, {
+                fetch(`/products/${productId}`, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json'
                     }
-                });
-
-                if (response.ok) {
-                    alert('Product deleted successfully!');
-
-                    // Remove product card from DOM with animation
-                    const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete product');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Remove product card from DOM without reload
+                    const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
                     if (productCard) {
-                        productCard.style.opacity = '0';
-                        productCard.style.transform = 'scale(0.8)';
-                        productCard.style.transition = 'all 0.3s';
-
-                        setTimeout(() => {
-                            productCard.remove();
-
-                            // Check if grid is empty
-                            const grid = document.getElementById('products-grid');
-                            if (!grid.querySelector('.product-card')) {
-                                grid.innerHTML = '<div class="no-products"><p>No products found.</p></div>';
-                            }
-                        }, 300);
+                        productCard.remove();
                     }
-                } else {
-                    const data = await response.json();
-                    alert('Error deleting product: ' + (data.message || 'Unknown error'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Network error. Please check your connection and try again.');
+                })
+                .catch(error => {
+                    console.error('Error deleting product:', error);
+                    alert('Error deleting product');
+                });
             }
 
-            // Close dropdown
             document.querySelectorAll('.product-dropdown.show').forEach(dropdown => {
                 dropdown.classList.remove('show');
             });
