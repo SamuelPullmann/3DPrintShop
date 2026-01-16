@@ -4,7 +4,6 @@
 .home-layout {
     display: flex;
     gap: 1.5rem;
-    align-items: flex-start;
     width: 100%;
 }
 
@@ -93,6 +92,29 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+}
+
+/* Add Product Button */
+.add-product-btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #00bcd4 0%, #9c27b0 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.add-product-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.add-product-btn:active {
+    transform: translateY(0);
 }
 
 .products-grid {
@@ -322,6 +344,23 @@
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
         width: 100%;
+    }
+
+    /* Stack Add Product button above Products heading */
+    .products-header {
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .products-header h2 {
+        text-align: center;
+        width: 100%;
+    }
+
+    .add-product-btn {
+        width: 100%;
+        max-width: calc(280px - 2rem);
     }
 }
 

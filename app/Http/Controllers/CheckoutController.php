@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -49,18 +50,9 @@ class CheckoutController
     /**
      * Process the checkout and create order
      */
-    public function store(Request $request)
+    public function store(CheckoutRequest $request)
     {
-        // Validate input
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'street_address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
-        ]);
+        $validated = $request->validated();
 
         $cart = session()->get('cart', []);
 

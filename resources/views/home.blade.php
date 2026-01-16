@@ -14,37 +14,55 @@
             <div class="filters-card">
                 <h3 class="filters-title">Filters</h3>
 
-                <div class="filters-section">
-                    <h4 class="filters-section-title">Product Type</h4>
-                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="digital"> Digital Model</label>
-                    <label class="checkbox-row"><input type="checkbox" name="type[]" value="physical"> Physical Model</label>
-                </div>
+                <form method="GET" action="{{ route('home') }}" id="filter-form">
+                    <div class="filters-section">
+                        <h4 class="filters-section-title">Product Type</h4>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="type[]" value="digital" {{ in_array('digital', request('type', [])) ? 'checked' : '' }}> Digital Model
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="type[]" value="physical" {{ in_array('physical', request('type', [])) ? 'checked' : '' }}> Physical Model
+                        </label>
+                    </div>
 
-                <div class="filters-divider"></div>
+                    <div class="filters-divider"></div>
 
-                <div class="filters-section">
-                    <h4 class="filters-section-title">Categories</h4>
-                    <label class="checkbox-row"><input type="checkbox" name="cat[]" value="miniatures"> Miniatures</label>
-                    <label class="checkbox-row"><input type="checkbox" name="cat[]" value="architecture"> Architecture</label>
-                    <label class="checkbox-row"><input type="checkbox" name="cat[]" value="art"> Art &amp; Sculptures</label>
-                    <label class="checkbox-row"><input type="checkbox" name="cat[]" value="functional"> Functional Items</label>
-                    <label class="checkbox-row"><input type="checkbox" name="cat[]" value="toys"> Toys &amp; Figurines</label>
-                </div>
+                    <div class="filters-section">
+                        <h4 class="filters-section-title">Categories</h4>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="cat[]" value="Miniatures" {{ in_array('Miniatures', request('cat', [])) ? 'checked' : '' }}> Miniatures
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="cat[]" value="Architecture" {{ in_array('Architecture', request('cat', [])) ? 'checked' : '' }}> Architecture
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="cat[]" value="Art & Sculptures" {{ in_array('Art & Sculptures', request('cat', [])) ? 'checked' : '' }}> Art &amp; Sculptures
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="cat[]" value="Functional Items" {{ in_array('Functional Items', request('cat', [])) ? 'checked' : '' }}> Functional Items
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="cat[]" value="Toys & Figurines" {{ in_array('Toys & Figurines', request('cat', [])) ? 'checked' : '' }}> Toys &amp; Figurines
+                        </label>
+                    </div>
 
-                <div class="filters-divider"></div>
+                    <div class="filters-divider"></div>
 
-                <div class="filters-section">
-                    <h4 class="filters-section-title">Price Range</h4>
-                    <div class="price-range">
-                        <div id="price-slider" data-max-price="{{ $maxPrice }}"></div>
-                        <div class="price-values">
-                            <span id="price-min-label">€0</span>
-                            <span id="price-max-label">€{{ $maxPrice }}</span>
+                    <div class="filters-section">
+                        <h4 class="filters-section-title">Price Range</h4>
+                        <div class="price-range">
+                            <div id="price-slider" data-max-price="{{ $maxPrice }}"></div>
+                            <div class="price-values">
+                                <span id="price-min-label">€{{ request('price_min', 0) }}</span>
+                                <span id="price-max-label">€{{ request('price_max', $maxPrice) }}</span>
+                            </div>
+                            <input type="hidden" name="price_min" id="price-min-input" value="{{ request('price_min', 0) }}">
+                            <input type="hidden" name="price_max" id="price-max-input" value="{{ request('price_max', $maxPrice) }}">
                         </div>
                     </div>
-                </div>
 
-                <button id="apply-filters" class="apply-filters-btn">Apply Filters</button>
+                    <button type="submit" class="apply-filters-btn">Apply Filters</button>
+                </form>
             </div>
         </aside>
 
@@ -62,7 +80,7 @@
             @auth
                 @if(Auth::user()->role === 'admin')
                     <div id="add-product-form" class="add-product-form">
-                        <form id="product-form" enctype="multipart/form-data">
+                        <form id="product-form" method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group">
@@ -85,14 +103,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="product-category">Category</label>
+                                <label for="product-category">Category *</label>
                                 <select id="product-category" name="category" required>
                                     <option value="" disabled selected hidden>Select Category</option>
-                                    <option value="miniatures">Miniatures</option>
-                                    <option value="architecture">Architecture</option>
-                                    <option value="art">Art & Sculptures</option>
-                                    <option value="functional">Functional Items</option>
-                                    <option value="toys">Toys & Figurines</option>
+                                    <option value="Miniatures">Miniatures</option>
+                                    <option value="Architecture">Architecture</option>
+                                    <option value="Art & Sculptures">Art & Sculptures</option>
+                                    <option value="Functional Items">Functional Items</option>
+                                    <option value="Toys & Figurines">Toys & Figurines</option>
                                 </select>
                             </div>
 
@@ -157,7 +175,7 @@
             <!-- Pagination -->
             @if($products->hasPages())
                 <div class="products-paging">
-                    {{ $products->links() }}
+                    {{ $products->appends(request()->query())->links() }}
                 </div>
             @endif
         </section>

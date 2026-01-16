@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddToCartRequest;
+use App\Http\Requests\UpdateCartRequest;
+use App\Http\Requests\RemoveFromCartRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -40,13 +43,8 @@ class CartController
     /**
      * Add item to cart
      */
-    public function add(Request $request)
+    public function add(AddToCartRequest $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,product_id',
-            'quantity' => 'integer|min:1|max:99'
-        ]);
-
         $productId = $request->product_id;
         $quantity = $request->quantity ?? 1;
 
@@ -77,13 +75,8 @@ class CartController
     /**
      * Update item quantity in cart
      */
-    public function update(Request $request)
+    public function update(UpdateCartRequest $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,product_id',
-            'quantity' => 'required|integer|min:1|max:99'
-        ]);
-
         $productId = $request->product_id;
         $quantity = $request->quantity;
 
@@ -94,18 +87,35 @@ class CartController
             session()->put('cart', $cart);
         }
 
+        // Calculate new totals
+        $subtotal = 0;
+        foreach ($cart as $pid => $qty) {
+            $product = Product::find($pid);
+            if ($product) {
+                $subtotal += $product->price * $qty;
+            }
+        }
+        $shipping = $subtotal > 0 ? 4.99 : 0;
+        $total = $subtotal + $shipping;
+
+        // Return JSON for AJAX or redirect for regular form
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Cart updated!',
+                'subtotal' => $subtotal,
+                'shipping' => $shipping,
+                'total' => $total
+            ]);
+        }
+
         return redirect()->route('cart.show')->with('success', 'Cart updated!');
     }
 
     /**
      * Remove item from cart
      */
-    public function remove(Request $request)
+    public function remove(RemoveFromCartRequest $request)
     {
-        $request->validate([
-            'product_id' => 'required'
-        ]);
-
         $productId = $request->product_id;
         $cart = session()->get('cart', []);
 
