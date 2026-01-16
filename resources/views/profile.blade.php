@@ -60,25 +60,23 @@
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="label-icon">
                                     <path d="M2.667 2.667h10.666c.734 0 1.334.6 1.334 1.333v8c0 .733-.6 1.333-1.334 1.333H2.667c-.734 0-1.334-.6-1.334-1.333V4c0-.733.6-1.333 1.334-1.333z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     <path d="M14.667 4 8 8.667 1.333 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg><span>Email</span>
+                                </svg><span> Email</span>
                             </label>
                             <input type="email"
                                    id="email"
                                    name="email"
-                                   class="form-input"
-                                   value="{{ old('email', $user->email) }}"
+                                   class="form-input form-input-disabled"
+                                   value="{{ $user->email }}"
                                    placeholder="mail@example.com"
-                                   required>
-                            @error('email')
-                                <span class="error-text">{{ $message }}</span>
-                            @enderror
+                                   disabled
+                                   readonly>
                         </div>
 
                         <div class="form-group">
                             <label for="phone" class="form-label">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="label-icon">
                                     <path d="M14.667 11.28v2a1.333 1.333 0 0 1-1.454 1.333 13.2 13.2 0 0 1-5.753-2.046 13.001 13.001 0 0 1-4-4 13.2 13.2 0 0 1-2.047-5.78A1.333 1.333 0 0 1 2.74 1.333h2a1.333 1.333 0 0 1 1.333 1.147c.084.64.24 1.267.466 1.867a1.333 1.333 0 0 1-.3 1.406l-.846.847a10.667 10.667 0 0 0 4 4l.846-.847a1.333 1.333 0 0 1 1.407-.3c.6.227 1.227.383 1.867.467a1.333 1.333 0 0 1 1.147 1.353z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg><span>Phone</span>
+                                </svg><span> Phone</span>
                             </label>
                             <input type="tel"
                                    id="phone"
@@ -101,7 +99,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="label-icon">
                                 <path d="M14 6.667c0 4.666-6 8.666-6 8.666s-6-4-6-8.666a6 6 0 1 1 12 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M8 8.667a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg><span>Street Address</span>
+                            </svg><span> Street Address</span>
                         </label>
                         <input type="text"
                                id="street_address"

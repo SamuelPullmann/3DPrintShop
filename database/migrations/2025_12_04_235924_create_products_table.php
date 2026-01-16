@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 8, 2);
             $table->enum('product_type', ['Digital', 'Physical']);
+            $table->enum('category', ['Miniatures', 'Architecture', 'Art & Sculptures', 'Functional Items', 'Toys & Figurines'])->nullable();
             $table->string('file_path')->nullable();
             $table->timestamps();
         });

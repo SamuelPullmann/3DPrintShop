@@ -39,7 +39,7 @@
                     <span class="cart-badge">{{ $cartCount }}</span>
                 @endif
             </a>
-            <a href="{{ route('auth.show') }}" class="nav-link" aria-label="Account">
+            <a href="{{ auth()->check() ? route('profile.show') : route('auth.show') }}" class="nav-link" aria-label="Account">
                 <img src="{{ asset('images/account.png') }}" alt="Account" class="nav-img">
             </a>
         </div>
