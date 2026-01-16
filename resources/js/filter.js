@@ -139,6 +139,75 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.attachAdminProductListeners) {
             window.attachAdminProductListeners();
         }
+
+        // Re-attach Add to Cart event listeners after AJAX update
+        reattachAddToCartListeners();
+    }
+
+    // Function to re-attach Add to Cart event listeners
+    function reattachAddToCartListeners() {
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', async function (e) {
+                e.preventDefault();
+
+                const productId = this.dataset.productId;
+                const originalText = this.innerHTML;
+
+                this.disabled = true;
+                this.innerHTML = 'Adding...';
+
+                try {
+                    const response = await fetch('/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity: 1
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        this.innerHTML = '✓ Added!';
+                        this.style.background = '#4caf50';
+
+                        // Update cart badge
+                        const cartLink = document.querySelector('.nav-link-cart');
+                        if (cartLink) {
+                            let badge = cartLink.querySelector('.cart-badge');
+                            if (!badge) {
+                                badge = document.createElement('span');
+                                badge.className = 'cart-badge';
+                                cartLink.appendChild(badge);
+                            }
+                            badge.textContent = data.cart_count;
+                        }
+
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.style.background = '';
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        alert('Failed to add product to cart.');
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Network error. Please try again.');
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }
+            });
+        });
     }
 
     // Function to close mobile filter overlay

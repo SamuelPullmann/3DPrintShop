@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
-class CartController extends Controller
+class CartController
 {
     /**
      * Display the shopping cart
@@ -126,4 +126,3 @@ class CartController extends Controller
         return redirect()->route('cart.show')->with('success', 'Cart cleared!');
     }
 }
-

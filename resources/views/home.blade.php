@@ -85,29 +85,15 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Categories</label>
-                                <div class="category-checkboxes">
-                                    <label class="checkbox-row">
-                                        <input type="checkbox" name="categories[]" value="miniatures">
-                                        Miniatures
-                                    </label>
-                                    <label class="checkbox-row">
-                                        <input type="checkbox" name="categories[]" value="architecture">
-                                        Architecture
-                                    </label>
-                                    <label class="checkbox-row">
-                                        <input type="checkbox" name="categories[]" value="art">
-                                        Art & Sculptures
-                                    </label>
-                                    <label class="checkbox-row">
-                                        <input type="checkbox" name="categories[]" value="functional">
-                                        Functional Items
-                                    </label>
-                                    <label class="checkbox-row">
-                                        <input type="checkbox" name="categories[]" value="toys">
-                                        Toys & Figurines
-                                    </label>
-                                </div>
+                                <label for="product-category">Category</label>
+                                <select id="product-category" name="category" required>
+                                    <option value="" disabled selected hidden>Select Category</option>
+                                    <option value="miniatures">Miniatures</option>
+                                    <option value="architecture">Architecture</option>
+                                    <option value="art">Art & Sculptures</option>
+                                    <option value="functional">Functional Items</option>
+                                    <option value="toys">Toys & Figurines</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
@@ -179,7 +165,7 @@
 @endsection
 
 @push('scripts')
-    @vite(['resources/js/filter.js'])
+    @vite(['resources/js/filter.js', 'resources/js/add-to-cart.js'])
     @auth
         @if(Auth::user()->role === 'admin')
             @vite(['resources/js/admin-product.js'])

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class ProductController extends Controller
+class ProductController
 {
     /**
      * Display a listing of the resource.
@@ -77,7 +77,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'product_type' => 'required|in:Digital,Physical',
-            'category' => 'nullable|string|in:miniatures,architecture,art,functional,toys',
+            'category' => 'nullable|string|in:Miniatures,Architecture,Art & Sculptures,Functional Items,Toys & Figurines',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -134,7 +134,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'sometimes|required|numeric|min:0',
             'product_type' => 'sometimes|required|in:Digital,Physical',
-            'category' => 'nullable|string|in:miniatures,architecture,art,functional,toys',
+            'category' => 'nullable|string|in:Miniatures,Architecture,Art & Sculptures,Functional Items,Toys & Figurines',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
