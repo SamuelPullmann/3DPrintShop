@@ -56,24 +56,19 @@
 
                 @if($product->category)
                     <div class="product-categories">
-                        <h3>Categories</h3>
+                        <h3>Category</h3>
                         <div class="category-tags">
                             @php
-                                $categories = is_array($product->category) ? $product->category : explode(',', $product->category);
+                                $categoryNames = [
+                                    'miniatures' => 'Miniatures',
+                                    'architecture' => 'Architecture',
+                                    'art' => 'Art & Sculptures',
+                                    'functional' => 'Functional Items',
+                                    'toys' => 'Toys & Figurines'
+                                ];
+                                $displayName = $categoryNames[$product->category] ?? ucfirst($product->category);
                             @endphp
-                            @foreach($categories as $cat)
-                                @php
-                                    $categoryNames = [
-                                        'miniatures' => 'Miniatures',
-                                        'architecture' => 'Architecture',
-                                        'art' => 'Art & Sculptures',
-                                        'functional' => 'Functional Items',
-                                        'toys' => 'Toys & Figurines'
-                                    ];
-                                    $displayName = $categoryNames[trim($cat)] ?? ucfirst(trim($cat));
-                                @endphp
-                                <span class="category-tag">{{ $displayName }}</span>
-                            @endforeach
+                            <span class="category-tag">{{ $displayName }}</span>
                         </div>
                     </div>
                 @endif
@@ -102,13 +97,22 @@
 
                 <div class="reviews-list">
                     @foreach($product->reviews->sortByDesc('created_at') as $review)
-                        <div class="review-card">
+                        <div class="review-card" data-review-id="{{ $review->review_id }}">
                             <div class="review-header">
                                 <div class="reviewer-avatar">{{ strtoupper(substr($review->user->name, 0, 1)) }}</div>
                                 <div class="reviewer-info">
                                     <div class="reviewer-name">{{ $review->user->name }}</div>
                                     <div class="review-date">{{ $review->created_at->format('M d, Y') }}</div>
                                 </div>
+                                @auth
+                                    @if(Auth::user()->role === 'admin')
+                                        <button class="delete-review-btn" data-review-id="{{ $review->review_id }}" title="Delete review">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 0 1 1.334-1.334h2.666a1.333 1.333 0 0 1 1.334 1.334V4m2 0v9.333a1.333 1.333 0 0 1-1.334 1.334H4.667a1.333 1.333 0 0 1-1.334-1.334V4h9.334Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    @endif
+                                @endauth
                             </div>
                             <div class="review-stars">
                                 @for($i = 1; $i <= 5; $i++)
@@ -183,5 +187,5 @@
 @endsection
 
 @push('scripts')
-    @vite(['resources/js/product-details.js'])
+    @vite(['resources/js/product-details.js', 'resources/js/add-to-cart.js'])
 @endpush

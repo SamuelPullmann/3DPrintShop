@@ -105,4 +105,49 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.textContent = originalBtnText;
         }
     });
+
+    // Handle delete review buttons (Admin only)
+    document.addEventListener('click', async function(e) {
+        if (e.target.closest('.delete-review-btn')) {
+            const btn = e.target.closest('.delete-review-btn');
+            const reviewId = btn.dataset.reviewId;
+
+            if (!confirm('Are you sure you want to delete this review?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/reviews/${reviewId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Remove the review card from DOM with animation
+                    const reviewCard = document.querySelector(`[data-review-id="${reviewId}"]`);
+                    if (reviewCard) {
+                        reviewCard.style.opacity = '0';
+                        reviewCard.style.transform = 'scale(0.95)';
+                        reviewCard.style.transition = 'all 0.3s';
+
+                        setTimeout(() => {
+                            reviewCard.remove();
+                            // Reload page to update review count and average rating
+                            location.reload();
+                        }, 300);
+                    }
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to delete review'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please check your connection and try again.');
+            }
+        }
+    });
 });

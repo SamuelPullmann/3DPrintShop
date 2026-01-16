@@ -143,14 +143,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('product-price').value = product.price || '';
                 document.getElementById('product-type').value = product.product_type || '';
 
-                // Handle categories - uncheck all first, then check the ones from product
-                document.querySelectorAll('input[name="categories[]"]').forEach(cb => cb.checked = false);
-                if (product.category) {
-                    const categories = product.category.split(',').map(c => c.trim());
-                    categories.forEach(cat => {
-                        const checkbox = document.querySelector(`input[name="categories[]"][value="${cat}"]`);
-                        if (checkbox) checkbox.checked = true;
-                    });
+                // Handle category - set the dropdown value
+                const categorySelect = document.getElementById('product-category');
+                if (categorySelect && product.category) {
+                    // If category is a string with comma-separated values, take the first one
+                    const category = product.category.split(',')[0].trim();
+                    categorySelect.value = category;
+                } else if (categorySelect) {
+                    categorySelect.value = '';
                 }
 
                 document.getElementById('product-description').value = product.description || '';

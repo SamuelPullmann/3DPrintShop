@@ -77,8 +77,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'product_type' => 'required|in:Digital,Physical',
-            'categories' => 'nullable|array',
-            'categories.*' => 'in:miniatures,architecture,art,functional,toys',
+            'category' => 'nullable|string|in:miniatures,architecture,art,functional,toys',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -88,11 +87,6 @@ class ProductController extends Controller
 
         $data = $validator->validated();
 
-        // Convert categories array to comma-separated string
-        if (isset($data['categories']) && is_array($data['categories'])) {
-            $data['category'] = implode(',', $data['categories']);
-            unset($data['categories']);
-        }
 
         // Handle image upload - store in previewImages subdirectory
         if ($request->hasFile('image')) {
@@ -140,8 +134,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'sometimes|required|numeric|min:0',
             'product_type' => 'sometimes|required|in:Digital,Physical',
-            'categories' => 'nullable|array',
-            'categories.*' => 'in:miniatures,architecture,art,functional,toys',
+            'category' => 'nullable|string|in:miniatures,architecture,art,functional,toys',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -151,14 +144,6 @@ class ProductController extends Controller
 
         $data = $validator->validated();
 
-        // Convert categories array to comma-separated string
-        if (isset($data['categories']) && is_array($data['categories'])) {
-            $data['category'] = implode(',', $data['categories']);
-            unset($data['categories']);
-        } elseif (isset($data['categories']) && empty($data['categories'])) {
-            $data['category'] = null;
-            unset($data['categories']);
-        }
 
         // Handle image upload - store in previewImages subdirectory
         if ($request->hasFile('image')) {
@@ -201,7 +186,9 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         if (!$product->file_path || !Storage::disk('local')->exists($product->file_path)) {
-            abort(404, 'Image not found');
+            // Return a 1x1 transparent PNG as placeholder instead of 404
+            $placeholder = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+            return response($placeholder, 200)->header('Content-Type', 'image/png');
         }
 
         $path = Storage::disk('local')->path($product->file_path);
@@ -244,5 +231,28 @@ class ProductController extends Controller
             'message' => 'Review submitted successfully!',
             'review' => $review
         ], 201);
+    }
+
+    /**
+     * Delete a review (Admin only)
+     */
+    public function deleteReview($reviewId)
+    {
+        // Check if user is admin
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $review = \App\Models\Review::find($reviewId);
+
+        if (!$review) {
+            return response()->json(['error' => 'Review not found'], 404);
+        }
+
+        $review->delete();
+
+        return response()->json([
+            'message' => 'Review deleted successfully!'
+        ], 200);
     }
 }
