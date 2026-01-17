@@ -18,6 +18,15 @@ class ProductController
     {
         $query = Product::query();
 
+        // Search filter - search in name and description
+        if ($request->has('q') && !empty($request->q)) {
+            $searchTerm = $request->q;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('description', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
         // Filter by product type (digital/physical) - only if checkboxes are selected
         if ($request->has('type') && is_array($request->type) && count($request->type) > 0) {
             $types = array_map(function($t) {
