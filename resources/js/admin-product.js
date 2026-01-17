@@ -1,5 +1,3 @@
-// Admin Product Management - Toggle Add Product Form (No AJAX)
-
 document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = document.getElementById('toggle-add-product');
     const addProductForm = document.getElementById('add-product-form');
@@ -240,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     return response.json();
                 })
-                .then(data => {
+                .then(() => {
                     // Remove product card from DOM without reload
                     const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
                     if (productCard) {
