@@ -26,7 +26,6 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 // Checkout routes
 Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
@@ -51,5 +50,4 @@ Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('
 
 // Public routes
 Route::get('/products/{id}/image', [ProductController::class, 'image'])->name('product.image');
-
 Route::get('/products/{id}/details', [ProductController::class, 'showPage'])->name('product.details');

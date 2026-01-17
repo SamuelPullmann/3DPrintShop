@@ -1,4 +1,7 @@
+/* Implemented with the use of AI */
 /* Home Page Styles */
+
+@import 'tailwindcss';
 
 /* Home page layout: filters sidebar + products area */
 .home-layout {

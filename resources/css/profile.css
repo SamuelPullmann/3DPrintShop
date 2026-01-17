@@ -1,3 +1,4 @@
+/* Implemented with the use of AI */
 /* Profile Settings Page Styles */
 
 .profile-container {
@@ -144,6 +145,15 @@
 }
 
 .form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.buttons-row {
     display: flex;
     align-items: center;
     justify-content: space-between;

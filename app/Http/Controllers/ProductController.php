@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\DestroyProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -50,7 +51,7 @@ class ProductController
             $query->where('price', '<=', $request->price_max);
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(9);
+        $products = $query->orderBy('created_at', 'desc')->paginate(12);
 
         // If it's an AJAX request, return JSON
         if ($request->wantsJson()) {
@@ -146,13 +147,8 @@ class ProductController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(DestroyProductRequest $request, string $id)
     {
-        // Check if user is admin
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
         $product = Product::findOrFail($id);
 
         // Delete image if exists
