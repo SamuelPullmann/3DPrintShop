@@ -20,7 +20,7 @@
                 <div class="alert-success">{{ session('success') }}</div>
             @endif
 
-            <form method="POST" action="{{ route('profile.update') }}" class="profile-form">
+            <form method="POST" action="{{ route('profile.update') }}" class="profile-form" id="profile-form">
                 @csrf
 
                 <div class="profile-section">
@@ -153,22 +153,21 @@
                         @enderror
                     </div>
                 </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-save">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M12.667 14H3.333c-.733 0-1.333-.6-1.333-1.333V3.333c0-.733.6-1.333 1.333-1.333h7.334L14 5.333v7.334c0 .733-.6 1.333-1.333 1.333z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M11.333 14v-5.333H4.667V14M4.667 2v3.333h5.333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Save Changes
-                    </button>
-
-                    <form method="POST" action="{{ route('logout') }}" class="logout-form">
-                        @csrf
-                        <button type="submit" class="btn-logout">Sign Out</button>
-                    </form>
-                </div>
             </form>
+
+            <div class="buttons-row">
+                <button type="submit" form="profile-form" class="btn-save">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M12.667 14H3.333c-.733 0-1.333-.6-1.333-1.333V3.333c0-.733.6-1.333 1.333-1.333h7.334L14 5.333v7.334c0 .733-.6 1.333-1.333 1.333z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.333 14v-5.333H4.667V14M4.667 2v3.333h5.333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Save Changes
+                </button>
+                <form method="POST" action="{{ route('logout') }}" class="logout-form">
+                    @csrf
+                    <button type="submit" class="btn-logout">Sign Out</button>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

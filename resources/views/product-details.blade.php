@@ -75,10 +75,11 @@
             </div>
         </div>
 
-        @if($reviewsCount > 0)
-            <div class="customer-reviews-section">
-                <h2>Customer Reviews</h2>
+        <!-- Customer Reviews Section - Always shown first -->
+        <div class="customer-reviews-section">
+            <h2>Customer Reviews</h2>
 
+            @if($reviewsCount > 0)
                 <div class="reviews-summary">
                     <div class="reviews-score">
                         <div class="score-number">{{ number_format($averageRating, 1) }}</div>
@@ -138,10 +139,12 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
-        @endif
+            @else
+                <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
+            @endif
+        </div>
 
-        <!-- Add Review Form Section -->
+        <!-- Add Review Form Section - Always shown last -->
         <div class="add-review-section">
             <h2>Write a Review</h2>
 
@@ -185,13 +188,6 @@
                 </div>
             @endauth
         </div>
-
-        @if($reviewsCount == 0)
-            <div class="customer-reviews-section">
-                <h2>Customer Reviews</h2>
-                <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
-            </div>
-        @endif
     </div>
 @endsection
 

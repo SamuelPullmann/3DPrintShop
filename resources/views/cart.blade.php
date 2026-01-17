@@ -103,10 +103,6 @@
                     </div>
 
                     <a href="{{ route('checkout.index') }}" class="btn-checkout">Proceed to Checkout</a>
-
-                    <p class="secure-message">
-                        Secure payment via encrypted connection. Your data is safe.
-                    </p>
                 </div>
             </aside>
         @endif

@@ -126,13 +126,4 @@ class CartController
 
         return redirect()->route('cart.show')->with('success', 'Item removed from cart!');
     }
-
-    /**
-     * Clear entire cart
-     */
-    public function clear()
-    {
-        session()->forget('cart');
-        return redirect()->route('cart.show')->with('success', 'Cart cleared!');
-    }
 }
