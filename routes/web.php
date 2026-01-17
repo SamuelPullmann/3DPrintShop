@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'index'])->name('home');
 
-Route::get('/search', function () {
-    return view('home');
-})->name('search');
+Route::get('/search', [ProductController::class, 'index'])->name('search');
 
 Route::get('/auth', function () {
     return view('auth');
