@@ -1,7 +1,6 @@
 // Cart quantity update with AJAX - updates price without page reload
 
 document.addEventListener('DOMContentLoaded', function () {
-    const qtyInputs = document.querySelectorAll('.qty-input');
     const qtyDecreaseBtns = document.querySelectorAll('.qty-decrease');
     const qtyIncreaseBtns = document.querySelectorAll('.qty-increase');
 
@@ -103,4 +102,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-

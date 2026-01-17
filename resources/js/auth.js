@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const showLoginBottom = document.getElementById('show-login-bottom');
     const registerPasswordInput = document.getElementById('register-password');
     const registerPasswordError = document.getElementById('register-password-error');
-    const registerButton = document.getElementById('register-button');
 
     function switchToRegister(e) {
         e.preventDefault();
@@ -44,4 +43,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
